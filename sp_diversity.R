@@ -3,25 +3,16 @@
 ###q = 0 (species richness), q = 1 (exponential of Shannon entropy index), and 
 ##q = 2 (the inverse of the Simpson concentration) for the sample-based incident data
 
-setwd("D:/Mubarak/species diversity")
-## install iNEXT package from CRAN
-#install.packages("iNEXT")
-## install the latest version from github
-#install.packages('devtools')
-#library(devtools)
-#install_github('AnneChao/iNEXT')
-## import packages
+setwd("D:/species diversity")
+
 library(iNEXT)
 library(ggplot2)
+
 data<-read.csv("Cumulative prey2.csv")
-#data<-data[,c(-1,-18)]
 str(data)
 head(data)
 data1<-as.data.frame(data)
-data(ciliates)
-head(ciliates)
-str(ciliates)
-#write.csv(ciliates,"ciliates.csv")
+
 as.incfreq(incidence_raw)
 data(incidence_raw)
 lapply(incidence_raw_data, as.incfreq)
