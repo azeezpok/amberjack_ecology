@@ -1,21 +1,25 @@
 ##########isotope analysis for Amberjack fish#######
-setwd("D:/Mubarak/isotop")
+setwd("D:/isotop")
 
+#___________________________________________________________________________________________
 ########install packages###############
-#install.packages("tRophicPosition")
-
-
-#install.packages("devtools")
-#library(devtools)
-#devtools::install_github("clquezada/tRophicPosition", build_vignettes = TRUE, force=T)
-
+#___________________________________________________________________________________________
 library(rjags)
-
 library(tRophicPosition)
 library(ggplot2)
 library(reshape2)
 library(plyr)
+library(RColorBrewer)
+library(stats)
+library(multcomp)
+library(ggsignif)
+library(multcompView)
+library(broom)
+library(datasets)
 
+#___________________________________________________________________________________________
+######## Data ###############
+#___________________________________________________________________________________________
 data.sum<-read.csv("sum_isotope.csv")
 head(data.sum)
 
@@ -26,7 +30,10 @@ Xlims <- aes(xmax = d13Cmn + d13Csd, xmin=d13Cmn - d13Csd)
 # Define custom shapes
 my_shapes <- c(0,1,2,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18)
 
-#Plot the data
+#___________________________________________________________________________________________
+######## Basic plots ###############
+#___________________________________________________________________________________________
+
 sum.biplot<-ggplot(data.sum, aes(x=d13Cmn, y=d15Nmn, colour=Class,shape=Class)) + 
   geom_point(size=3) + 
   scale_shape_manual(values = my_shapes)+
@@ -57,6 +64,7 @@ C_values <- rnorm(n = 5, mean = ca_Cmn, sd = ca_Csd)
 ca_values<-cbind(N_values,C_values)
 #write.csv(ca_values,"baseline_values.csv")
 
+
 ########SD plot#############
 head(TP.data)
 #tp.data_lengthmn<-read.csv("AJ_length_mn.csv")
@@ -84,7 +92,10 @@ sp <- ggplot(tp.data_lengthmn, aes(x = d13Cmn, y = d15Nmn, color = Group)) +
 sp
 dev.off()
 
-##########modelling TP##############
+#___________________________________________________________________________________________
+######## modelling TP ###############
+#___________________________________________________________________________________________
+
 TP.data<-read.csv("AJ_Length.csv")
 head(TP.data)
 
@@ -134,7 +145,7 @@ print(summary(sexList[[3]]))
 dev.off()
 
                                                                                                                                                                                                                                                                                                                           
-#########estimate TP#############
+###estimate TP
 # First we create a cluster with the cores available
 cluster <- parallel::makePSOCKcluster(parallel::detectCores())
 # Then we run the model in parallel, nested in system.time()
@@ -195,20 +206,9 @@ TP.ffg.plot<-ggplot(out_test, aes(y = TP, x = Class, colour= Class, fill = Class
 TP.ffg.plot
 dev.off()
 
-
-
-######anova for comparing mean TP for each group###########
-#library(ggplot2)
-#library(RColorBrewer)
-#library(stats)
-library(multcomp)
-
-library(ggsignif)
-library(multcompView)
-library(dplyr)
-library(broom)
-
-#library(datasets)
+#___________________________________________________________________________________________
+######## Anova for comparing mean TP for each group ###############
+#___________________________________________________________________________________________
 
 head(out_test)
 
@@ -259,3 +259,6 @@ gg.anova<-ggplot(out_test, aes(y = TP, x = Class, colour= Class, fill = Class)) 
 #jpeg("TP_Length_annova.jpg", res = 600,height = 6,width = 8,units = "in")
 gg.anova
 dev.off()
+#___________________________________________________________________________________________
+######## THE END ###############
+#___________________________________________________________________________________________
